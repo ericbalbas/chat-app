@@ -12,6 +12,8 @@ dotenv.config();
 
 const PORT = process.env.PORT;
 
+const __dirname = path.resolve();
+
 // Middleware to parse JSON body
 app.use(express.json());
 app.use(cookieParser());
@@ -24,6 +26,15 @@ app.use(
 
 app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoute)
+
+if(process.env.NODE_ENV === 'production')
+{
+  app.use(express.static(path.join,__dirname,"../client/dist"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
